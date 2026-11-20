@@ -1,10 +1,25 @@
-# SimMAP
-Aplicação para contribuir no levantamento de dados de mapeamento de perfil.
+# Dashboard LaIA
+Dashboard administrativo de membros e projetos da Liga Acadêmica de Inteligência Artificial da UFS.
 
 Para rodar:
 
-npm install<br>
-npm run dev
+Use Node.js 22, instale as dependências com `npm ci`, copie `.env.example` para
+`.env.local`, configure o acesso administrativo e execute `npm run dev`.
+
+## Publicação
+
+- Repositório privado: [LaIA-UFS/dashboard-laia](https://github.com/LaIA-UFS/dashboard-laia).
+- Projeto Vercel: [LaIA / dashboard-laia](https://vercel.com/la-ia/dashboard-laia).
+- Endereço de produção: [dashboard-laia.vercel.app](https://dashboard-laia.vercel.app).
+
+A publicação inicial utiliza os arquivos enviados ao Vercel. O repositório ainda precisa
+ser conectado em **Settings → Git** para publicar automaticamente a cada alteração.
+Para publicar manualmente, envie os arquivos versionados do projeto à página do projeto
+no Vercel, sem incluir `.env.local`, `node_modules`, cópias de segurança ou credenciais.
+
+O ambiente **Production** do Vercel contém `ADMIN_PASSWORD_HASH` e `SESSION_SECRET`
+como segredos, além de `APP_URL` com o endereço HTTPS e dos identificadores das bases.
+As credenciais não ficam no repositório. Alterações nessas variáveis exigem um novo deploy.
 
 ## Notion
 
@@ -22,6 +37,11 @@ Os dados e análises da liga usada como origem da cópia não são combinados co
    os identificadores das duas bases e não é versionado. Não coloque o token em variáveis `NEXT_PUBLIC_*`.
 4. Reinicie `npm run dev`. O dashboard passa a consultar o Notion no servidor e atualiza a tela
    a cada 30 segundos enquanto a aba está visível. Recarregar a página também consulta os dados atuais.
+
+No site publicado, adicione `NOTION_TOKEN` como **Secret** no ambiente **Production** em
+**Vercel → Environment Variables** e faça **Redeploy**. Os dois identificadores das bases
+já estão configurados. Enquanto o token não for adicionado, o site utiliza a cópia salva
+com os 19 membros e o projeto de exemplo da LaIA.
 
 Sem token, o dashboard mostra a última sincronização salva em `db/db.json`, com a data indicada
 na tela. Essa cópia não recebe novas alterações do Notion automaticamente.
