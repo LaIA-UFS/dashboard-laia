@@ -23,8 +23,8 @@ As credenciais não ficam no repositório. Alterações nessas variáveis exigem
 
 ## Notion
 
-O dashboard utiliza as bases de [Membros](https://www.notion.so/2fcc2a812d0283af937001d7092f7d49)
-e [Projetos](https://www.notion.so/41ec2a812d02818d9a2bd2f3881e5a9e) da LaIA.
+O dashboard utiliza as bases de [Membros](https://www.notion.so/7057067de5d183eabcb9817fbdc94966)
+e [Projetos](https://www.notion.so/e927067de5d182ff843b011f1ebd6bf8) da LaIA.
 A equipe de cada projeto determina os projetos exibidos no perfil dos membros.
 Os dados e análises da liga usada como origem da cópia não são combinados com os da LaIA.
 
@@ -41,8 +41,7 @@ Os dados e análises da liga usada como origem da cópia não são combinados co
 
 No site publicado, adicione `NOTION_TOKEN` como **Secret** no ambiente **Production** em
 **Vercel → Environment Variables** e faça **Redeploy**. Os dois identificadores das bases
-já estão configurados. Enquanto o token não for adicionado, o site utiliza a cópia salva
-com os 19 membros e o projeto de exemplo da LaIA.
+já estão configurados. Sem token, o site utiliza a última cópia salva das bases da LaIA.
 
 Sem token, o dashboard mostra a última sincronização salva em `db/db.json`, com a data indicada
 na tela. Essa cópia não recebe novas alterações do Notion automaticamente.

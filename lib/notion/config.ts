@@ -1,6 +1,6 @@
 export const NOTION_SOURCES = {
-  members: "c76c2a81-2d02-82e1-9e14-072202690361",
-  projects: "41ec2a81-2d02-81bc-992b-000b3491641f",
+  members: "0b97067d-e5d1-82c3-bd2a-07c4afbb8b3b",
+  projects: "cce7067d-e5d1-83f5-b85f-8747b04b0243",
 } as const;
 
 export function getNotionConfig(env: NodeJS.ProcessEnv = process.env) {

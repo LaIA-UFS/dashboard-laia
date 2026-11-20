@@ -33,7 +33,7 @@ export function DataFreshness({ source }: { source: DashboardData["source"] }) {
         <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
         {source.mode === "live" ? "Notion conectado" : "Última sincronização do Notion"} · {updated}
       </span>
-      <a href="https://www.notion.so/41ec2a812d028134b49bd36ec87c4216" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
+      <a href="https://www.notion.so/96d7067de5d182a99afc013e2446eda8" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
         Gerenciar no Notion <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
       </a>
     </div>
