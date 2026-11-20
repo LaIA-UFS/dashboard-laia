@@ -1,4 +1,5 @@
 import { Header } from "@/components/header";
+import { DataFreshness } from "@/components/data-freshness";
 import { OrganogramSection } from "@/components/organogram-section";
 import { getDashboardData } from "@/lib/services/member-service";
 
@@ -6,7 +7,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export default async function OrganogramaPage() {
-  const { members } = await getDashboardData();
+  const { members, source } = await getDashboardData();
 
   return (
     <div className="min-h-screen bg-background bg-grid">
@@ -18,6 +19,7 @@ export default async function OrganogramaPage() {
       <div className="relative">
         <Header />
         <main className="container mx-auto space-y-8 px-4 py-8">
+          <DataFreshness source={source} />
           <OrganogramSection members={members} />
         </main>
       </div>

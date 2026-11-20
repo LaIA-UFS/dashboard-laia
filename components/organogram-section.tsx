@@ -316,7 +316,8 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
   const [showGraph, setShowGraph] = useState(false);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
-  const [activeMember, setActiveMember] = useState<Member | null>(null);
+  const [activeMemberSlug, setActiveMemberSlug] = useState<string | null>(null);
+  const activeMember = members.find(member => member.slug === activeMemberSlug) ?? null;
 
   useEffect(() => {
     if (!api) {
@@ -549,7 +550,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
                                       member={member}
                                       role={role}
                                       accent={node.type === "corp" ? "institutional" : "default"}
-                                      onClick={() => setActiveMember(member)}
+                                      onClick={() => setActiveMemberSlug(member.slug)}
                                     />
                                   ))}
                                 </div>
@@ -578,7 +579,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
                                 key={`${node.id}-${member.slug}-effective`}
                                 member={member}
                                 role="Membro efetivo"
-                                onClick={() => setActiveMember(member)}
+                                onClick={() => setActiveMemberSlug(member.slug)}
                               />
                             ))}
                           </div>
@@ -600,7 +601,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
         open={Boolean(activeMember)}
         onOpenChange={(open) => {
           if (!open) {
-            setActiveMember(null);
+            setActiveMemberSlug(null);
           }
         }}
       />

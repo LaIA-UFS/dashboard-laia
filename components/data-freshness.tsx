@@ -12,7 +12,14 @@ export function DataFreshness({ source }: { source: DashboardData["source"] }) {
     const timer = setInterval(() => {
       if (document.visibilityState === "visible") router.refresh();
     }, 30000);
-    return () => clearInterval(timer);
+    const refreshOnReturn = () => {
+      if (document.visibilityState === "visible") router.refresh();
+    };
+    document.addEventListener("visibilitychange", refreshOnReturn);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", refreshOnReturn);
+    };
   }, [router, source?.mode]);
 
   if (!source) return null;

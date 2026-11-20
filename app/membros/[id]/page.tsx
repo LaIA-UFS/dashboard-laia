@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
+import { DataFreshness } from "@/components/data-freshness";
 import { MemberProfileContent } from "@/components/member-profile-content";
-import { MemberServiceError, getMemberBySlug } from "@/lib/services/member-service";
+import { MemberServiceError, getDashboardData, getMemberBySlug } from "@/lib/services/member-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,6 +13,7 @@ export default async function MemberProfilePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const { source } = await getDashboardData();
   let member;
 
   try {
@@ -33,7 +35,8 @@ export default async function MemberProfilePage({
 
       <div className="relative">
         <Header />
-        <main className="container mx-auto px-4 py-10">
+        <main className="container mx-auto space-y-6 px-4 py-10">
+          <DataFreshness source={source} />
           <MemberProfileContent member={member} mode="page" />
         </main>
       </div>

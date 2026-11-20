@@ -36,7 +36,8 @@ Os dados e análises da liga usada como origem da cópia não são combinados co
 3. Copie o token da integração para `NOTION_TOKEN` em `.env.local`. Esse arquivo já contém
    os identificadores das duas bases e não é versionado. Não coloque o token em variáveis `NEXT_PUBLIC_*`.
 4. Reinicie `npm run dev`. O dashboard passa a consultar o Notion no servidor e atualiza a tela
-   a cada 30 segundos enquanto a aba está visível. Recarregar a página também consulta os dados atuais.
+   a cada 30 segundos enquanto a aba está visível, inclusive nos perfis e no organograma.
+   Voltar à aba ou recarregar a página também consulta os dados atuais.
 
 No site publicado, adicione `NOTION_TOKEN` como **Secret** no ambiente **Production** em
 **Vercel → Environment Variables** e faça **Redeploy**. Os dois identificadores das bases
