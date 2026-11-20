@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { MuseoModerno, JetBrains_Mono } from 'next/font/google'
+import { MuseoModerno } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -7,11 +7,6 @@ import './globals.css'
 const museo = MuseoModerno({
   subsets: ["latin"],
   display: 'swap',
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: '--font-mono'
 });
 
 export const metadata: Metadata = {

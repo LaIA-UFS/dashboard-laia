@@ -37,7 +37,8 @@ Os dados e análises da liga usada como origem da cópia não são combinados co
    os identificadores das duas bases e não é versionado. Não coloque o token em variáveis `NEXT_PUBLIC_*`.
 4. Reinicie `npm run dev`. O dashboard passa a consultar o Notion no servidor e atualiza a tela
    a cada 30 segundos enquanto a aba está visível, inclusive nos perfis e no organograma.
-   Voltar à aba ou recarregar a página também consulta os dados atuais.
+   A verificação é leve: a tela só é atualizada quando os dados mudam. Uma cache de 30 segundos
+   compartilha consultas entre páginas; o botão Atualizar força uma nova consulta autenticada.
 
 No site publicado, adicione `NOTION_TOKEN` como **Secret** no ambiente **Production** em
 **Vercel → Environment Variables** e faça **Redeploy**. Os dois identificadores das bases
@@ -76,3 +77,16 @@ instâncias, utilize um armazenamento compartilhado para os contadores.
 
 Referências: [autenticação](https://developers.notion.com/reference/authentication)
 e [consulta de bases](https://developers.notion.com/reference/query-a-data-source).
+
+## Navegação e fotos
+
+O menu lateral pode ser recolhido no computador e abre como painel em telas pequenas.
+A preferência de recolhimento é preservada durante a navegação. A seção Membros reúne
+busca por nome, núcleo, tecnologia e projeto, filtros de núcleo/cargo e perfis completos.
+Todos os indicadores e blocos existentes do dashboard foram mantidos no layout compacto.
+
+As fotos em `public/members` têm miniaturas WebP para os cards e versões maiores para
+os perfis. `lib/member-media.ts` associa os nomes e suas variantes aos arquivos, sem
+confundir pessoas com nomes parecidos. Cadastros sem foto exibem as iniciais.
+
+Os gráficos usam um único contêiner responsivo e não repetem animações a cada atualização.

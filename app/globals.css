@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --radius: 0.625rem;
   --background: oklch(0.12 0.02 285);
   --foreground: oklch(0.97 0 0);
   --card: oklch(0.15 0.03 285);
@@ -151,3 +152,17 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(26, 144, 255, 0.5);
 }
+
+/* Compact workspace: one persistent sidebar and a 56 px header. */
+.app-frame { --navigation-width: 224px; }
+.app-frame[data-collapsed="true"] { --navigation-width: 64px; }
+.app-sidebar { width: var(--navigation-width); }
+.dashboard-main { width: 100%; max-width: 1700px; margin-inline: auto; padding: 16px; display: flex; flex-direction: column; gap: 20px; }
+.dashboard-main > * { min-width: 0; }
+.member-card { content-visibility: auto; contain-intrinsic-size: auto 185px; }
+.dashboard-main [data-slot="card"] { min-width: 0; }
+.dashboard-main [data-slot="chart"] { aspect-ratio: auto; }
+.dashboard-main [data-slot="chart"]:empty { min-height: 170px; }
+select { color-scheme: dark; }
+@media (min-width: 768px) { .app-workspace { margin-left: var(--navigation-width); } .dashboard-main { padding: 20px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }

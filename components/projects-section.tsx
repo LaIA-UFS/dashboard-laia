@@ -6,7 +6,7 @@ import {
   Bar,
   XAxis,
   YAxis,
-  ResponsiveContainer,
+
   Cell,
   Tooltip,
 } from "recharts";
@@ -205,34 +205,34 @@ export function ProjectsSection({
     (statusSummary["Suspenso"] || 0) + (statusSummary["Não iniciado"] || 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center gap-2">
         <div className="h-1 w-1 rounded-full bg-primary" />
-        <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+        <h2 className="text-lg font-semibold text-foreground sm:text-lg">
           Análise de Projetos
         </h2>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Card className="border-primary/20 bg-gradient-to-br from-primary/10 to-transparent backdrop-blur">
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/10 to-transparent">
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-primary/20 p-3">
               <Folder className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{projects.length}</p>
+              <p className="text-lg font-bold text-foreground">{projects.length}</p>
               <p className="text-sm text-muted-foreground">Projetos mapeados</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-gradient-to-br from-green-500/10 to-transparent backdrop-blur">
+        <Card className="border-primary/20 bg-gradient-to-br from-green-500/10 to-transparent">
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-green-500/20 p-3">
               <FolderKanban className="h-6 w-6 text-green-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-lg font-bold text-foreground">
                 {statusSummary["Em andamento"] || 0}
               </p>
               <p className="text-sm text-muted-foreground">Em andamento</p>
@@ -240,13 +240,13 @@ export function ProjectsSection({
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-gradient-to-br from-cyan-500/10 to-transparent backdrop-blur">
+        <Card className="border-primary/20 bg-gradient-to-br from-cyan-500/10 to-transparent">
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-cyan-500/20 p-3">
               <Users className="h-6 w-6 text-cyan-300" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-lg font-bold text-foreground">
                 {members.filter((member) => member.projetosAtuais.length > 0).length}
               </p>
               <p className="text-sm text-muted-foreground">Membros alocados</p>
@@ -254,23 +254,23 @@ export function ProjectsSection({
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-gradient-to-br from-orange-500/10 to-transparent backdrop-blur">
+        <Card className="border-primary/20 bg-gradient-to-br from-orange-500/10 to-transparent">
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-orange-500/20 p-3">
               <AlertCircle className="h-6 w-6 text-orange-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{stalledProjectsCount}</p>
+              <p className="text-lg font-bold text-foreground">{stalledProjectsCount}</p>
               <p className="text-sm text-muted-foreground">Suspensos ou não iniciados</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 xl:grid-cols-12 2xl:gap-5">
-        <Card className="border-primary/20 bg-card/50 backdrop-blur md:col-span-2 lg:col-span-6 xl:col-span-8">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 xl:grid-cols-12 2xl:gap-3">
+        <Card className="border-primary/20 bg-card/50 md:col-span-2 lg:col-span-6 xl:col-span-8">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
               <Folder className="h-5 w-5 text-primary" />
               Times por Projeto em Andamento
             </CardTitle>
@@ -278,9 +278,8 @@ export function ProjectsSection({
           <CardContent>
             <ChartContainer
               config={{ value: { label: "Integrantes", color: "#425bff" } }}
-              className="h-[320px] w-full sm:h-[360px] lg:h-[400px] xl:h-[430px] 2xl:h-[480px]"
+              className="h-[270px] w-full sm:h-[290px]"
             >
-              <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={projectStats}
                   layout="vertical"
@@ -317,15 +316,15 @@ export function ProjectsSection({
                   <Bar
                     dataKey="value"
                     radius={[0, 4, 4, 0]}
-                    animationDuration={800}
-                    animationEasing="ease-out"
+                    isAnimationActive={false}
+
                   >
                     {projectStats.map((_, index) => (
                       <Cell key={`project-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
-              </ResponsiveContainer>
+
             </ChartContainer>
 
             <div className="mt-6 space-y-4">
@@ -338,7 +337,7 @@ export function ProjectsSection({
                 return (
                   <div
                     key={project.slug}
-                    className="rounded-2xl border border-border/50 bg-secondary/30 p-4"
+                    className="rounded-xl border border-border/50 bg-secondary/30 p-4"
                   >
                     <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div>
@@ -386,9 +385,9 @@ export function ProjectsSection({
         </Card>
 
         <div className="space-y-4 md:col-span-2 lg:col-span-6 xl:col-span-4">
-          <Card className="border-primary/20 bg-card/50 backdrop-blur">
+          <Card className="border-primary/20 bg-card/50">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
                 <Rocket className="h-5 w-5 text-primary" />
                 Interesse em Projetos Futuros
               </CardTitle>
@@ -396,9 +395,8 @@ export function ProjectsSection({
             <CardContent>
               <ChartContainer
                 config={{ value: { label: "Interessados", color: "#425bff" } }}
-                className="h-[300px] w-full sm:h-[320px] xl:h-[340px] 2xl:h-[380px]"
+                className="h-[270px] w-full sm:h-[290px]"
               >
-                <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={futureProjectsStats}
                     layout="vertical"
@@ -432,22 +430,22 @@ export function ProjectsSection({
                     <Bar
                       dataKey="value"
                       radius={[0, 4, 4, 0]}
-                      animationDuration={800}
-                      animationEasing="ease-out"
+                      isAnimationActive={false}
+
                     >
                       {futureProjectsStats.map((_, index) => (
                         <Cell key={`interest-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Bar>
                   </BarChart>
-                </ResponsiveContainer>
+
               </ChartContainer>
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20 bg-card/50 backdrop-blur">
+          <Card className="border-primary/20 bg-card/50">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
                 <Clock3 className="h-5 w-5 text-primary" />
                 Prioridade Oficial
               </CardTitle>
@@ -475,15 +473,15 @@ export function ProjectsSection({
         </div>
       </div>
 
-      <Card className="border-primary/20 bg-card/50 backdrop-blur">
+      <Card className="border-primary/20 bg-card/50">
         <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-3 text-xl sm:text-2xl">
+          <CardTitle className="flex items-center gap-3 text-lg sm:text-lg">
             <Star className="h-6 w-6 text-primary" />
             Radar para Novos Projetos
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-8">
+        <CardContent className="space-y-5">
           {sortedCounts.map((projectCount, index) => {
             const priorityLevel = index + 1;
             const groupMembers = membersByProjectCount[projectCount];
@@ -589,13 +587,13 @@ export function ProjectsSection({
       </Card>
 
       <Dialog open={!!selectedMember} onOpenChange={(open) => !open && setSelectedMember(null)}>
-        <DialogContent className="max-w-4xl border-primary/20 bg-background/95 backdrop-blur-md">
+        <DialogContent className="max-w-4xl border-primary/20 bg-background/95-md">
           {selectedMember && (
             <>
               <DialogHeader>
                 <div className="flex items-start justify-between pr-8">
                   <div>
-                    <DialogTitle className="text-2xl font-bold text-foreground">
+                    <DialogTitle className="text-lg font-bold text-foreground">
                       {selectedMember.nome}
                     </DialogTitle>
                     <DialogDescription className="mt-1 text-base text-muted-foreground">
@@ -610,7 +608,7 @@ export function ProjectsSection({
                 </div>
               </DialogHeader>
 
-              <div className="grid gap-6 py-4 max-h-[70vh] overflow-y-auto pr-2">
+              <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge variant="outline" className={`px-3 py-1 text-sm ${getMaturidadeBadgeClass(selectedMember.maturidade)}`}>
                     {getMaturidadeLabel(selectedMember.maturidade)}

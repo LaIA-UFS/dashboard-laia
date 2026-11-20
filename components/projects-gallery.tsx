@@ -174,34 +174,34 @@ export function ProjectsGallery({ projects, members }: ProjectsGalleryProps) {
   }, [projects]);
 
   return (
-    <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-[linear-gradient(135deg,rgba(168,85,247,0.18),rgba(34,211,238,0.08),rgba(10,10,20,0.96))] p-6 shadow-[0_24px_80px_rgba(88,28,135,0.28)] sm:p-8">
+    <div className="space-y-4">
+      <section className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-[linear-gradient(135deg,rgba(168,85,247,0.18),rgba(34,211,238,0.08),rgba(10,10,20,0.96))] p-4 shadow-[0_24px_80px_rgba(88,28,135,0.28)] sm:p-3">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.12),transparent_24%)]" />
         <div className="absolute right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 rounded-full border border-white/10 bg-white/5 blur-2xl" />
         <div className="relative">
           <div className="space-y-5">
             <div className="space-y-3">
-              <h1 className="max-w-full text-3xl font-semibold tracking-tight text-white sm:text-4xl xl:text-5xl">
+              <h1 className="max-w-full text-lg font-semibold tracking-tight text-white sm:text-xl xl:text-2xl">
                 Projetos da LaIA
               </h1>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4 backdrop-blur">
+              <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                 <p className="text-xs uppercase tracking-wider text-white/45">Projetos</p>
-                <p className="mt-2 text-3xl font-semibold text-white">{summary.total}</p>
+                <p className="mt-2 text-lg font-semibold text-white">{summary.total}</p>
               </div>
-              <div className="rounded-2xl border border-emerald-300/15 bg-emerald-500/10 p-4 backdrop-blur">
+              <div className="rounded-xl border border-emerald-300/15 bg-emerald-500/10 p-4">
                 <p className="text-xs uppercase tracking-wider text-emerald-100/60">
                   Em andamento
                 </p>
-                <p className="mt-2 text-3xl font-semibold text-emerald-50">{summary.active}</p>
+                <p className="mt-2 text-lg font-semibold text-emerald-50">{summary.active}</p>
               </div>
-              <div className="rounded-2xl border border-cyan-300/15 bg-cyan-500/10 p-4 backdrop-blur">
+              <div className="rounded-xl border border-cyan-300/15 bg-cyan-500/10 p-4">
                 <p className="text-xs uppercase tracking-wider text-cyan-100/60">
                   Pessoas alocadas
                 </p>
-                <p className="mt-2 text-3xl font-semibold text-cyan-50">
+                <p className="mt-2 text-lg font-semibold text-cyan-50">
                   {summary.allocatedMembers}
                 </p>
               </div>
@@ -210,10 +210,10 @@ export function ProjectsGallery({ projects, members }: ProjectsGalleryProps) {
         </div>
       </section>
 
-      <Card className="border-primary/20 bg-card/60 backdrop-blur">
+      <Card className="border-primary/20 bg-card/60">
         <CardHeader className="gap-4">
           <div>
-            <CardTitle className="text-xl">Explorador de projetos</CardTitle>
+            <CardTitle className="text-lg">Explorador de projetos</CardTitle>
             <CardDescription>
               Filtre por nome, status e prioridade para encontrar rapidamente um projeto.
             </CardDescription>
@@ -332,15 +332,15 @@ export function ProjectsGallery({ projects, members }: ProjectsGalleryProps) {
                         </Badge>
                       ) : null}
                     </div>
-                    <CardTitle className="text-2xl leading-tight">{project.nome}</CardTitle>
+                    <CardTitle className="text-lg leading-tight">{project.nome}</CardTitle>
                   </div>
-                  <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3 text-primary transition-colors group-hover:bg-primary/15">
+                  <div className="rounded-xl border border-primary/20 bg-primary/10 p-3 text-primary transition-colors group-hover:bg-primary/15">
                     <FolderOpen className="h-5 w-5" />
                   </div>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-border/50 bg-background/30 p-3">
+                  <div className="rounded-xl border border-border/50 bg-background/30 p-3">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground text-ellipsis overflow-hidden">
                       Responsável
                     </p>
@@ -348,13 +348,13 @@ export function ProjectsGallery({ projects, members }: ProjectsGalleryProps) {
                       {responsavel ?? "Não informado"}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-border/50 bg-background/30 p-3">
+                  <div className="rounded-xl border border-border/50 bg-background/30 p-3">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground text-ellipsis overflow-hidden">
                       Integrantes
                     </p>
                     <p className="mt-2 text-sm font-medium text-foreground">{project.teamSize}</p>
                   </div>
-                  <div className="rounded-2xl border border-border/50 bg-background/30 p-3">
+                  <div className="rounded-xl border border-border/50 bg-background/30 p-3">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground text-ellipsis overflow-hidden">
                       Fase
                     </p>
@@ -379,7 +379,7 @@ export function ProjectsGallery({ projects, members }: ProjectsGalleryProps) {
                   </a>
                 ) : null}
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-border/40 bg-secondary/20 p-4">
+                  <div className="rounded-xl border border-border/40 bg-secondary/20 p-4">
                     <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
                       <CalendarDays className="h-4 w-4" />
                       Início
@@ -388,7 +388,7 @@ export function ProjectsGallery({ projects, members }: ProjectsGalleryProps) {
                       {project.dataInicio ?? "Não informado"}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-border/40 bg-secondary/20 p-4">
+                  <div className="rounded-xl border border-border/40 bg-secondary/20 p-4">
                     <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
                       <ShieldAlert className="h-4 w-4" />
                       Encerramento
@@ -446,7 +446,7 @@ export function ProjectsGallery({ projects, members }: ProjectsGalleryProps) {
                       })}
                     </div>
                   ) : (
-                    <div className="rounded-2xl border border-dashed border-border/60 bg-background/20 px-4 py-5 text-sm text-muted-foreground">
+                    <div className="rounded-xl border border-dashed border-border/60 bg-background/20 px-4 py-5 text-sm text-muted-foreground">
                       Nenhum integrante informado até o momento.
                     </div>
                   )}
@@ -488,7 +488,7 @@ export function ProjectsGallery({ projects, members }: ProjectsGalleryProps) {
                           ))}
                         </div>
                       ) : (
-                        <div className="mt-2 rounded-2xl border border-dashed border-border/60 bg-background/20 px-4 py-5 text-sm text-muted-foreground">
+                        <div className="mt-2 rounded-xl border border-dashed border-border/60 bg-background/20 px-4 py-5 text-sm text-muted-foreground">
                           Nenhum registro de interesse até o momento.
                         </div>
                       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { MemberAvatar } from "@/components/member-avatar";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { getMemberPhoto } from "@/lib/member-media";
 import type { Member } from "@/lib/types";
 
 interface MemberProfileContentProps {
@@ -80,30 +79,23 @@ export function MemberProfileContent({
   showPageLink = false,
 }: MemberProfileContentProps) {
   const isModal = mode === "modal";
-  const imageSrc = getMemberPhoto(member);
   const { fullName, shortName } = getDisplayNames(member);
   const title = isModal ? shortName : member.nome;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {isModal ? <div className="flex items-center gap-3"><MemberAvatar member={member} className="h-16 w-14" sizes="56px" /><p className="text-sm font-semibold">{fullName}</p></div> : null}
       <div
-        className={`grid gap-6 items-start ${
-          isModal ? "grid-cols-1" : "xl:grid-cols-[480px_1fr]"
+        className={`grid gap-4 items-start ${
+          isModal ? "grid-cols-1" : "lg:grid-cols-[260px_1fr]"
         }`}
       >
         {!isModal ? (
-          <Card className="flex h-full max-w-lg flex-col items-center justify-center border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(0,0,0,0.16))] p-6 md:p-8">
+          <Card className="flex h-full max-w-lg flex-col items-center justify-center border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(0,0,0,0.16))] p-4">
             <CardContent className="w-full p-0 flex justify-center">
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/15 shadow-2xl">
-                <Image
-                  src={imageSrc}
-                  alt={member.nome}
-                  onError={(event) => { event.currentTarget.src = "/placeholder-user.jpg"; }}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1280px) 100vw, 30vw"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5">
+              <div className="relative aspect-[4/5] w-full max-w-[260px] overflow-hidden rounded-xl border border-white/15 shadow-2xl">
+                <MemberAvatar member={member} portrait className="h-full w-full border-0" sizes="260px" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3">
                   <div className="flex flex-wrap gap-2">
                     <Badge className=" text-sm border-white/10 bg-white/10 text-white">
                       {member.status ?? "Membro"}
@@ -159,7 +151,7 @@ export function MemberProfileContent({
               <div className="flex flex-wrap items-center gap-3">
                 <h2
                   className={`font-semibold tracking-tight text-white ${
-                    isModal ? "text-3xl sm:text-4xl xl:text-5xl" : "text-4xl xl:text-5xl"
+                    isModal ? "text-lg sm:text-xl xl:text-2xl" : "text-xl xl:text-2xl"
                   }`}
                 >
                   {title}
@@ -271,7 +263,7 @@ export function MemberProfileContent({
 
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Tecnologias
             </h3>
@@ -282,7 +274,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Áreas de Interesse
             </h3>
@@ -293,7 +285,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Carreira
             </h3>
@@ -304,7 +296,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Atributos Pessoais
             </h3>
@@ -315,7 +307,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Projetos Atuais
             </h3>
@@ -326,7 +318,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Projetos com Interesse
             </h3>
@@ -337,7 +329,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Projetos Coordenados
             </h3>
@@ -348,7 +340,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Projetos Finalizados
             </h3>
@@ -359,7 +351,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               Declarados no Forms
             </h3>
@@ -372,7 +364,7 @@ export function MemberProfileContent({
 
       <div className="grid gap-4 xl:grid-cols-3">
         <Card className="border-white/10 bg-black/20 xl:col-span-2">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               <Lightbulb className="h-4 w-4 text-primary" />
               Objetivo na LaIA
@@ -387,7 +379,7 @@ export function MemberProfileContent({
         </Card>
 
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-5">
+          <CardContent className="p-3">
             <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.24em] text-white/60">
               <Layers3 className="h-4 w-4 text-primary" />
               Projeto Pessoal

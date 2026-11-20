@@ -1,5 +1,7 @@
 "use client";
 
+import { MemberAvatar } from "@/components/member-avatar";
+
 import Link from "next/link";
 import { useState } from "react";
 import { Check, ChevronsUpDown, FileSearch, User, X } from "lucide-react";
@@ -20,7 +22,8 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MemberProfileModal } from "@/components/member-profile-modal";
+import dynamic from "next/dynamic";
+const MemberProfileModal = dynamic(() => import("@/components/member-profile-modal").then(module => module.MemberProfileModal));
 import type { Member } from "@/lib/types";
 
 interface MemberSelectorProps {
@@ -59,9 +62,9 @@ export function MemberSelector({
 
   return (
     <>
-      <Card className="border-primary/20 bg-card/50 backdrop-blur">
+      <Card className="border-primary/20 bg-card/50">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-xl">
+          <CardTitle className="flex items-center gap-2 text-lg">
             <User className="h-6 w-6 text-primary" />
             Explorar Membros
           </CardTitle>
@@ -76,7 +79,7 @@ export function MemberSelector({
                 variant="outline"
                 role="combobox"
                 aria-expanded={open}
-                className="w-full justify-between border-border/60 bg-secondary/50 py-6 text-base hover:bg-secondary"
+                className="w-full justify-between border-border/60 bg-secondary/50 py-2 text-sm hover:bg-secondary"
               >
                 {selectedMember ? selectedMember.nome.trim() : "Escolha um membro..."}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -98,6 +101,7 @@ export function MemberSelector({
                           setOpen(false);
                         }}
                       >
+                        <MemberAvatar member={member} className="size-8" sizes="32px" />
                         <Check
                           className={cn(
                             "mr-2 h-5 w-5",
@@ -134,7 +138,7 @@ export function MemberSelector({
 
           {selectedMember && (
             <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
-              <div className="rounded-2xl border border-primary/30 bg-primary/5 p-5">
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-3">
                 <div className="mb-4 flex items-start justify-between gap-4">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
@@ -266,11 +270,11 @@ export function MemberSelector({
         </CardContent>
       </Card>
 
-      <MemberProfileModal
+      {profileOpen && selectedMember ? <MemberProfileModal
         member={selectedMember}
         open={profileOpen}
         onOpenChange={setProfileOpen}
-      />
+      /> : null}
     </>
   );
 }

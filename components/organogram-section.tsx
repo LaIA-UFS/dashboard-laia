@@ -1,5 +1,7 @@
 "use client";
 
+import { MemberAvatar } from "@/components/member-avatar";
+
 import { useEffect, useMemo, useState } from "react";
 import {
   ChevronLeft,
@@ -22,7 +24,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { MemberProfileModal } from "@/components/member-profile-modal";
+import dynamic from "next/dynamic";
+const MemberProfileModal = dynamic(() => import("@/components/member-profile-modal").then(module => module.MemberProfileModal));
 import type { Member } from "@/lib/types";
 
 interface OrganogramSectionProps {
@@ -108,15 +111,16 @@ function MemberPill({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-2xl border backdrop-blur ${
+      className={`rounded-xl border ${
         accent === "institutional"
           ? "border-amber-300/20 bg-[linear-gradient(180deg,rgba(251,191,36,0.12),rgba(255,255,255,0.04))]"
           : "border-white/10 bg-black/20"
-      } ${isPresidencyRole ? "p-5 md:p-6" : "p-4"} ${
+      } ${isPresidencyRole ? "p-3 md:p-4" : "p-4"} ${
         onClick ? "text-left transition-transform hover:-translate-y-0.5" : "text-left"
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3">
+        <MemberAvatar member={member} className="size-10" sizes="40px" />
         <div>
           <p className="text-sm font-semibold text-white">{member.nome}</p>
           <p className="mt-1 text-xs text-white/60">
@@ -147,7 +151,7 @@ function MemberPill({
 
 function EmptyState({ text }: { text: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-white/12 bg-black/15 px-4 py-6 text-sm text-white/55">
+    <div className="rounded-xl border border-dashed border-white/12 bg-black/15 px-4 py-6 text-sm text-white/55">
       {text}
     </div>
   );
@@ -166,7 +170,7 @@ function GraphNodeCard({
     <button
       type="button"
       onClick={onClick}
-      className={`w-full rounded-[1.75rem] border p-5 text-left transition-all ${
+      className={`w-full rounded-[1.75rem] border p-3 text-left transition-all ${
         active
           ? "border-primary/40 bg-primary/12 shadow-[0_20px_80px_rgba(168,85,247,0.22)]"
           : "border-white/10 bg-black/20 hover:border-white/20 hover:bg-white/6"
@@ -177,7 +181,7 @@ function GraphNodeCard({
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/50">
             {node.type === "corp" ? "Nucleo central" : "Diretoria"}
           </p>
-          <h3 className="mt-2 text-xl font-semibold text-white">{node.name}</h3>
+          <h3 className="mt-2 text-lg font-semibold text-white">{node.name}</h3>
         </div>
         <Badge className="border-white/10 bg-white/8 text-white">
           {node.groups.reduce((total, group) => total + group.members.length, 0) +
@@ -361,11 +365,11 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
   if (!corpNode) {
     return (
       <section className="space-y-4">
-        <h1 className="text-3xl font-semibold tracking-tight text-white">
+        <h1 className="text-lg font-semibold tracking-tight text-white">
           Organograma
         </h1>
         <Card className="border-white/10 bg-black/20">
-          <CardContent className="p-6 text-sm text-muted-foreground">
+          <CardContent className="p-4 text-sm text-muted-foreground">
             Nenhum membro disponivel para montar o organograma.
           </CardContent>
         </Card>
@@ -374,7 +378,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
   }
 
   return (
-    <section className="w-full space-y-8">
+    <section className="w-full space-y-5">
       <div className="w-full space-y-4">
         <div className="flex flex-wrap items-center gap-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-primary">
@@ -400,7 +404,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
           </Button>
         </div>
         <div className="w-full space-y-3">
-          <h1 className="w-full text-4xl font-semibold tracking-tight text-white md:text-5xl xl:text-xl">
+          <h1 className="w-full text-xl font-semibold tracking-tight text-white md:text-2xl xl:text-lg">
             Organograma em árvore com navegação por diretoria
           </h1>
           <p className="w-full text-sm leading-6 text-muted-foreground md:text-base lg:max-w-4xl xl:max-w-full">
@@ -412,9 +416,9 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
 
       {showGraph ? (
         <Card className="overflow-hidden border-white/10 bg-[linear-gradient(135deg,rgba(8,11,18,0.97),rgba(28,10,41,0.92))]">
-          <CardContent className="relative p-6 md:p-8">
+          <CardContent className="relative p-4">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.10),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.08),transparent_24%)]" />
-            <div className="relative space-y-8">
+            <div className="relative space-y-5">
               <div className="mx-auto max-w-2xl">
                 <GraphNodeCard
                   node={corpNode}
@@ -498,11 +502,11 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
               <Card
                 className={`overflow-hidden border-white/10 bg-gradient-to-br ${CARD_STYLES[index % CARD_STYLES.length]} shadow-[0_40px_120px_rgba(0,0,0,0.35)]`}
               >
-                <CardContent className="relative p-6 md:p-8">
+                <CardContent className="relative p-4">
                   <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.12),transparent_30%)]" />
-                  <div className="relative space-y-8">
+                  <div className="relative space-y-5">
                     <div
-                      className={`grid gap-6 ${
+                      className={`grid gap-4 ${
                         node.effectiveMembers.length > 0
                           ? "lg:grid-cols-[0.9fr_1.1fr]"
                           : "lg:grid-cols-1"
@@ -520,7 +524,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
                           </Badge>
                         </div>
                         <div>
-                          <h2 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
+                          <h2 className="text-lg font-semibold tracking-tight text-white md:text-xl">
                             {node.name}
                           </h2>
                           <p className="mt-3 max-w-xl text-sm leading-6 text-white/68">
@@ -528,7 +532,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
                           </p>
                         </div>
 
-                        <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                        <div className="rounded-3xl border border-white/10 bg-black/20 p-3">
                           <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.26em] text-white/60">
                             {node.type === "corp" ? (
                               <Crown className="h-4 w-4 text-amber-300" />
@@ -563,7 +567,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
                       </div>
 
                       {node.effectiveMembers.length > 0 ? (
-                        <div className="rounded-[2rem] border border-white/10 bg-black/18 p-5 md:p-6">
+                        <div className="rounded-[2rem] border border-white/10 bg-black/18 p-3 md:p-4">
                           <div className="mb-5 flex items-center justify-between gap-4">
                             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.26em] text-white/60">
                               <ShieldCheck className="h-4 w-4 text-primary" />
@@ -596,7 +600,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
         <CarouselNext className="cursor-pointer right-3 top-auto bottom-3 translate-y-0 border-white/10 bg-black/45 text-white hover:bg-black/60 md:-right-12 md:top-1/2 md:bottom-auto md:-translate-y-1/2" />
       </Carousel>
 
-      <MemberProfileModal
+      {activeMember ? <MemberProfileModal
         member={activeMember}
         open={Boolean(activeMember)}
         onOpenChange={(open) => {
@@ -604,7 +608,7 @@ export function OrganogramSection({ members }: OrganogramSectionProps) {
             setActiveMemberSlug(null);
           }
         }}
-      />
+      /> : null}
     </section>
   );
 }

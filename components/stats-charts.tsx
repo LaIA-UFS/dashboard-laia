@@ -6,7 +6,7 @@ import {
   Bar,
   XAxis,
   YAxis,
-  ResponsiveContainer,
+
   Cell,
   PieChart,
   Pie,
@@ -115,10 +115,10 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
   const technicalScoreData = analyses.technicalScoreByMaturity;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="w-full flex items-center gap-2">
         <div className="h-1 w-1 rounded-full bg-primary" />
-        <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+        <h2 className="text-lg font-semibold text-foreground sm:text-lg">
           Estatísticas Gerais
         </h2>
         <div className="ml-1 rounded-full bg-primary/20 px-2.5 py-1 sm:ml-2 sm:px-3">
@@ -128,20 +128,20 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
         </div>
       </div>
       <div className="w-full flex justify-center items-center">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid w-full gap-3 sm:grid-cols-3">
           {overviewCards.map((card) => {
             const Icon = card.icon;
 
             return (
               <Card
                 key={card.label}
-                className="border-primary/20 bg-card/50 backdrop-blur"
+                className="border-primary/20 bg-card/50"
               >
-                <CardContent className="p-5">
+                <CardContent className="p-3">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground">{card.label}</p>
-                      <p className="mt-2 text-3xl font-semibold text-foreground">
+                      <p className="mt-1 text-2xl font-semibold text-foreground">
                         {typeof card.value === "number" && card.label.includes("Média")
                           ? card.value.toFixed(2)
                           : card.value}
@@ -150,7 +150,7 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                         {card.description}
                       </p>
                     </div>
-                    <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3">
+                    <div className="rounded-xl border border-primary/20 bg-primary/10 p-3">
                       <Icon className="h-5 w-5 text-primary" />
                     </div>
                   </div>
@@ -161,10 +161,10 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 xl:grid-cols-12 2xl:gap-5">
-        <Card className="border-primary/20 bg-card/50 backdrop-blur md:col-span-2 lg:col-span-6 xl:col-span-7">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12 2xl:gap-3">
+        <Card className="border-primary/20 bg-card/50 md:col-span-2 lg:col-span-7">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
               <BarChart3 className="h-5 w-5 text-primary" />
               Tecnologias Mais Citadas
             </CardTitle>
@@ -172,9 +172,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
           <CardContent>
             <ChartContainer
               config={{ value: { label: "Citações", color: "#425bff" } }}
-              className="h-[300px] w-full sm:h-[340px] lg:h-[380px] xl:h-[420px] 2xl:h-[460px]"
+              className="h-[270px] w-full sm:h-[290px]"
             >
-              <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={techData}
                   layout="vertical"
@@ -209,22 +208,22 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                   <Bar
                     dataKey="value"
                     radius={[0, 4, 4, 0]}
-                    animationDuration={800}
-                    animationEasing="ease-out"
+                    isAnimationActive={false}
+
                   >
                     {techData.map((_, index) => (
                       <Cell key={`tech-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
-              </ResponsiveContainer>
+
             </ChartContainer>
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-card/50 backdrop-blur md:col-span-2 lg:col-span-6 xl:col-span-5">
+        <Card className="border-primary/20 bg-card/50 md:col-span-2 lg:col-span-5">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
               <GraduationCap className="h-5 w-5 text-primary" />
               Cursos
             </CardTitle>
@@ -232,9 +231,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
           <CardContent>
             <ChartContainer
               config={{ value: { label: "Membros", color: "#425bff" } }}
-              className="h-[240px] w-full sm:h-[270px] lg:h-[300px] xl:h-[320px] 2xl:h-[360px]"
+              className="h-[170px] w-full sm:h-[190px]"
             >
-              <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={courseData}
@@ -245,8 +243,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                     paddingAngle={3}
                     dataKey="value"
                     nameKey="label"
-                    animationDuration={800}
-                    animationEasing="ease-out"
+                    isAnimationActive={false}
+
                   >
                     {courseData.map((_, index) => (
                       <Cell key={`course-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -262,15 +260,15 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                     formatter={(value: number, name: string) => [`${value} membros`, name]}
                   />
                 </PieChart>
-              </ResponsiveContainer>
+
             </ChartContainer>
             <DonutLegendList data={courseData} />
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-card/50 backdrop-blur md:col-span-1 lg:col-span-3 xl:col-span-4">
+        <Card className="border-primary/20 bg-card/50 md:col-span-1 lg:col-span-4">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
               <Target className="h-5 w-5 text-primary" />
               Carreiras Mais Citadas
             </CardTitle>
@@ -278,9 +276,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
           <CardContent>
             <ChartContainer
               config={{ value: { label: "Citações", color: "#425bff" } }}
-              className="h-[280px] w-full sm:h-[300px] xl:h-[340px] 2xl:h-[380px]"
+              className="h-[220px] w-full sm:h-[240px]"
             >
-              <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={careerData}
                   layout="vertical"
@@ -315,22 +312,22 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                   <Bar
                     dataKey="value"
                     radius={[0, 4, 4, 0]}
-                    animationDuration={800}
-                    animationEasing="ease-out"
+                    isAnimationActive={false}
+
                   >
                     {careerData.map((_, index) => (
                       <Cell key={`career-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
-              </ResponsiveContainer>
+
             </ChartContainer>
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-card/50 backdrop-blur md:col-span-1 lg:col-span-3 xl:col-span-4">
+        <Card className="border-primary/20 bg-card/50 md:col-span-1 lg:col-span-4">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
               <Clock3 className="h-5 w-5 text-primary" />
               Disponibilidade Semanal
             </CardTitle>
@@ -338,9 +335,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
           <CardContent>
             <ChartContainer
               config={{ value: { label: "Membros", color: "#425bff" } }}
-              className="h-[240px] w-full sm:h-[260px] lg:h-[280px] xl:h-[300px] 2xl:h-[340px]"
+              className="h-[170px] w-full sm:h-[190px]"
             >
-              <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={availabilityData}
@@ -351,8 +347,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                     paddingAngle={3}
                     dataKey="value"
                     nameKey="label"
-                    animationDuration={800}
-                    animationEasing="ease-out"
+                    isAnimationActive={false}
+
                   >
                     {availabilityData.map((_, index) => (
                       <Cell key={`availability-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -368,15 +364,15 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                     formatter={(value: number, name: string) => [`${value} membros`, name]}
                   />
                 </PieChart>
-              </ResponsiveContainer>
+
             </ChartContainer>
             <DonutLegendList data={availabilityData} />
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-card/50 backdrop-blur md:col-span-1 lg:col-span-3 xl:col-span-4">
+        <Card className="border-primary/20 bg-card/50 md:col-span-1 lg:col-span-4">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
               <Users className="h-5 w-5 text-primary" />
               Nível de Maturidade
             </CardTitle>
@@ -384,9 +380,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
           <CardContent>
             <ChartContainer
               config={{ value: { label: "Membros", color: "#425bff" } }}
-              className="h-[280px] w-full sm:h-[300px] xl:h-[340px] 2xl:h-[380px]"
+              className="h-[220px] w-full sm:h-[240px]"
             >
-              <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={maturityData}
                   layout="vertical"
@@ -421,22 +416,22 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                   <Bar
                     dataKey="value"
                     radius={[0, 4, 4, 0]}
-                    animationDuration={800}
-                    animationEasing="ease-out"
+                    isAnimationActive={false}
+
                   >
                     {maturityData.map((_, index) => (
                       <Cell key={`maturity-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
-              </ResponsiveContainer>
+
             </ChartContainer>
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-card/50 backdrop-blur md:col-span-1 lg:col-span-3 xl:col-span-5">
+        <Card className="border-primary/20 bg-card/50 md:col-span-1 lg:col-span-5">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
               <Lightbulb className="h-5 w-5 text-primary" />
               Atributos Mais Citados
             </CardTitle>
@@ -444,9 +439,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
           <CardContent>
             <ChartContainer
               config={{ value: { label: "Citações", color: "#425bff" } }}
-              className="h-[280px] w-full sm:h-[300px] xl:h-[340px] 2xl:h-[380px]"
+              className="h-[220px] w-full sm:h-[240px]"
             >
-              <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={attributeData}
                   layout="vertical"
@@ -481,22 +475,22 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                   <Bar
                     dataKey="value"
                     radius={[0, 4, 4, 0]}
-                    animationDuration={800}
-                    animationEasing="ease-out"
+                    isAnimationActive={false}
+
                   >
                     {attributeData.map((_, index) => (
                       <Cell key={`attribute-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
-              </ResponsiveContainer>
+
             </ChartContainer>
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-card/50 backdrop-blur md:col-span-2 lg:col-span-6 xl:col-span-7">
+        <Card className="border-primary/20 bg-card/50 md:col-span-2 lg:col-span-7">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-lg">
               <BrainCircuit className="h-5 w-5 text-primary" />
               Nota Técnica por Maturidade
             </CardTitle>
@@ -504,9 +498,8 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
           <CardContent>
             <ChartContainer
               config={{ notaMedia: { label: "Nota média", color: "#425bff" } }}
-              className="h-[300px] w-full sm:h-[320px] xl:h-[360px] 2xl:h-[400px]"
+              className="h-[270px] w-full sm:h-[290px]"
             >
-              <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={technicalScoreData}
                   layout="vertical"
@@ -548,15 +541,15 @@ export function StatsCharts({ members, analyses }: StatsChartsProps) {
                   <Bar
                     dataKey="notaMedia"
                     radius={[0, 4, 4, 0]}
-                    animationDuration={800}
-                    animationEasing="ease-out"
+                    isAnimationActive={false}
+
                   >
                     {technicalScoreData.map((_, index) => (
                       <Cell key={`score-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
-              </ResponsiveContainer>
+
             </ChartContainer>
           </CardContent>
         </Card>

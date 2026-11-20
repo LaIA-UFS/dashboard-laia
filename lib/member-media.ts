@@ -87,8 +87,9 @@ const PHOTO_BY_NAME = new Map(
   PHOTO_ENTRIES.flatMap(entry => entry.names.map(name => [normalizeName(name), entry.src] as const)),
 );
 
-export function getMemberPhoto(member: Pick<Member, "nome" | "nomeOriginal">) {
-  return PHOTO_BY_NAME.get(normalizeName(member.nomeOriginal || ""))
+export function getMemberPhoto(member: Pick<Member, "nome" | "nomeOriginal">, size: "thumbnail" | "profile" = "profile") {
+  const src = PHOTO_BY_NAME.get(normalizeName(member.nomeOriginal || ""))
     ?? PHOTO_BY_NAME.get(normalizeName(member.nome))
     ?? "/placeholder-user.jpg";
+  return src.endsWith(".jpeg") ? src.replace(".jpeg", size === "thumbnail" ? "-thumb.webp" : "-profile.webp") : src;
 }

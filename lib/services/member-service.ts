@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { cache } from "react";
+import { createHash } from "node:crypto";
+import { unstable_cache } from "next/cache";
 import { getNotionConfig } from "@/lib/notion/config";
 import { fetchNotionRows } from "@/lib/notion/client";
 import { buildNotionDatabase } from "@/lib/notion/transform";
@@ -52,12 +54,15 @@ function isErrorWithCode(error: unknown): error is Error & { code: string } {
 async function readDatabase(): Promise<DatabaseFile> {
   const config = getNotionConfig();
   if (config.token) {
-    const rows = await fetchNotionRows(config);
-    return buildNotionDatabase(rows.members, rows.projects, {
-      syncedAt: new Date().toISOString(),
-      membersDataSourceId: config.members,
-      projectsDataSourceId: config.projects,
-    });
+    // Only source data is shared. Authorization stays outside the cache.
+    return unstable_cache(async () => {
+      const rows = await fetchNotionRows(config);
+      return buildNotionDatabase(rows.members, rows.projects, {
+        syncedAt: new Date().toISOString(),
+        membersDataSourceId: config.members,
+        projectsDataSourceId: config.projects,
+      });
+    }, ["laia-notion-v2", config.members, config.projects], { revalidate: 30, tags: ["laia-notion"] })();
   }
   const fileContent = await readFile(DB_PATH, "utf-8");
   const parsed = JSON.parse(fileContent) as Partial<DatabaseFile>;
@@ -127,6 +132,7 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
       source: {
         mode: getNotionConfig().token ? "live" : "snapshot",
         syncedAt: database.notion!.syncedAt,
+        revision: createHash("sha256").update(JSON.stringify({ members: database.membros, projects: database.projetos, analyses: database.analises })).digest("hex").slice(0, 20),
       },
       members,
       projects: database.projetos.map((project) =>

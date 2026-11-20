@@ -183,6 +183,7 @@ export interface DashboardData {
   source?: {
     mode: "live" | "snapshot";
     syncedAt: string;
+    revision?: string;
   };
   members: Member[];
   projects: Project[];
