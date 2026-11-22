@@ -26,11 +26,11 @@ export default async function MemberFormPage({ params }: { params: Promise<{ tok
     }
     catch (error) { message = error instanceof ProfileNotionError ? error.message : "O formulário está temporariamente indisponível. Tente novamente em instantes."; }
   }
-  return <main className="min-h-screen bg-background bg-grid px-4 py-8 text-foreground sm:py-12">
-    <div className="mx-auto max-w-2xl space-y-6">
-      <header className="flex items-center gap-3"><Image src="/logo-mark.webp" alt="LaIA" width={48} height={48} /><div><p className="text-lg font-semibold">LaIA</p><p className="text-sm text-muted-foreground">Liga Acadêmica de Inteligência Artificial</p></div></header>
-      {profile ? <MemberUpdateForm profile={profile} token={token} availabilityOptions={AVAILABILITY_OPTIONS} canSubmit={Boolean(process.env.NOTION_FORM_TOKEN?.trim() && storage)} /> : <section className="rounded-xl border border-border bg-card p-6"><h1 className="text-xl font-semibold">Não foi possível abrir o cadastro</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">{message}</p></section>}
-      <footer className="text-center text-xs leading-5 text-muted-foreground">Este é um link individual. Compartilhe-o apenas com o titular do cadastro.</footer>
+  return <main className="min-h-dvh bg-[#f4f2fa] px-4 py-6 font-sans text-slate-900 sm:py-10 [color-scheme:light]">
+    <div className="mx-auto max-w-2xl space-y-5">
+      <header className="flex items-center gap-3"><Image src="/logo-mark.webp" alt="" width={42} height={42} className="rounded-xl bg-violet-950 p-1" /><div><p className="text-lg font-semibold">LaIA</p><p className="text-sm text-slate-600">Liga Acadêmica de Inteligência Artificial</p></div></header>
+      {profile ? <MemberUpdateForm profile={profile} token={token} availabilityOptions={AVAILABILITY_OPTIONS} canSubmit={Boolean(process.env.NOTION_FORM_TOKEN?.trim() && storage)} /> : <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"><h1 className="text-xl font-semibold">Não foi possível abrir o cadastro</h1><p className="mt-3 text-sm leading-6 text-slate-600">{message}</p></section>}
+      <footer className="text-center text-xs leading-5 text-slate-600">Este é um link individual. Compartilhe-o apenas com o titular do cadastro.</footer>
     </div>
   </main>;
 }
