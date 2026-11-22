@@ -110,7 +110,8 @@ Para ativar o recebimento:
    conteúdo**. Conecte-a somente à base **Membros**; não habilite inserção nem alteração de esquema.
    Cadastre o token como segredo `NOTION_FORM_TOKEN`, mantendo `NOTION_TOKEN` somente para leitura.
 2. No projeto correto do Vercel, conecte **Upstash Redis** em **Storage / Marketplace**.
-   As variáveis privadas são `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN`.
+   O Marketplace pode criar `KV_REST_API_URL` e `KV_REST_API_TOKEN`. A conexão direta
+   usa `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN`. O token deve permitir escrita.
    Configure a persistência sem despejo automático de chaves; não use um banco de cache descartável.
    Separe o banco de Preview do banco de Production para testes não alterarem respostas reais.
 3. Confira `APP_URL=https://dashboard-laia.vercel.app` em Production e faça um novo deploy.

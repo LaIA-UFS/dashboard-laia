@@ -8,8 +8,12 @@ export class ResponseStoreError extends Error {
 }
 
 export function getResponseStoreConfig(env: NodeJS.ProcessEnv = process.env): StoreConfig | null {
-  const url = env.UPSTASH_REDIS_REST_URL?.trim();
-  const token = env.UPSTASH_REDIS_REST_TOKEN?.trim();
+  // The Vercel Marketplace installs the KV pair; direct Upstash connections
+  // use the Upstash pair. Keep the URL and token from the same connection.
+  const directUrl = env.UPSTASH_REDIS_REST_URL?.trim();
+  const directToken = env.UPSTASH_REDIS_REST_TOKEN?.trim();
+  const url = directUrl && directToken ? directUrl : env.KV_REST_API_URL?.trim();
+  const token = directUrl && directToken ? directToken : env.KV_REST_API_TOKEN?.trim();
   if (!url || !token) return null;
   try {
     const endpoint = new URL(url);
