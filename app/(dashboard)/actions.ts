@@ -6,4 +6,5 @@ import { requireAdmin } from "@/lib/auth/session";
 export async function refreshNotionData() {
   await requireAdmin();
   updateTag("laia-notion");
+  updateTag("laia-forms");
 }

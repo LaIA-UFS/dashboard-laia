@@ -6,7 +6,7 @@ import { getMemberPhoto } from "@/lib/member-media";
 import type { Member } from "@/lib/types";
 
 export function MemberAvatar({ member, className = "size-10", portrait = false, sizes = "40px" }: {
-  member: Pick<Member, "nome" | "nomeOriginal">; className?: string; portrait?: boolean; sizes?: string;
+  member: Pick<Member, "nome" | "nomeOriginal" | "notionId">; className?: string; portrait?: boolean; sizes?: string;
 }) {
   const src = getMemberPhoto(member, portrait ? "profile" : "thumbnail");
   const [failedSrc, setFailedSrc] = useState<string | null>(null);

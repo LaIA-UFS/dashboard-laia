@@ -7,6 +7,8 @@ import { getNotionConfig } from "@/lib/notion/config";
 import { fetchNotionRows } from "@/lib/notion/client";
 import { buildNotionDatabase } from "@/lib/notion/transform";
 import { requireAdmin } from "@/lib/auth/session";
+import { createResponseStore, getResponseStoreConfig } from "@/lib/forms/response-store";
+import { applyDashboardResponses } from "@/lib/forms/dashboard-overlay";
 import {
   normalizeNameKey,
   rawAnalysesToAnalyses,
@@ -114,7 +116,21 @@ function toServiceError(error: unknown): MemberServiceError {
 export const getDashboardData = cache(async (): Promise<DashboardData> => {
   await requireAdmin();
   try {
-    const database = await readDatabase();
+    let database = await readDatabase();
+    const storage = getResponseStoreConfig();
+    let formsStatus: "connected" | "unavailable" | "unconfigured" = storage ? "connected" : "unconfigured";
+    if (storage) {
+      try {
+        const sourceId = getNotionConfig().members;
+        const ids = database.membros.flatMap(member => member.notionId ? [member.notionId] : []);
+        const responses = await unstable_cache(
+          async () => [...await createResponseStore(storage, sourceId).readMany(ids)],
+          ["laia-form-responses-v1", sourceId, storage.url, ...ids],
+          { revalidate: 30, tags: ["laia-forms"] },
+        )();
+        database = applyDashboardResponses(database, new Map(responses));
+      } catch { formsStatus = "unavailable"; }
+    }
     const members = database.membros.map(rawMemberToMember);
     const membersByNameKey = new Map(
       members.map((member) => [normalizeNameKey(member.nomeOriginal), member.slug])
@@ -131,8 +147,9 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
     return {
       source: {
         mode: getNotionConfig().token ? "live" : "snapshot",
+        formsStatus,
         syncedAt: database.notion!.syncedAt,
-        revision: createHash("sha256").update(JSON.stringify({ members: database.membros, projects: database.projetos, analyses: database.analises })).digest("hex").slice(0, 20),
+        revision: createHash("sha256").update(JSON.stringify({ members: database.membros, projects: database.projetos, analyses: database.analises, formsStatus })).digest("hex").slice(0, 20),
       },
       members,
       projects: database.projetos.map((project) =>

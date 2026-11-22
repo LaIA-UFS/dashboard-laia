@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "sync:notion": "node --experimental-strip-types --env-file-if-exists=.env.local scripts/sync-notion.mjs",
     "test:notion": "node --experimental-strip-types --test tests/notion.test.mjs",
-    "test:auth": "node --experimental-strip-types --test tests/auth.test.mjs"
+    "test:auth": "node --experimental-strip-types --test tests/auth.test.mjs",
+    "test:forms": "node --experimental-strip-types --test tests/forms.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

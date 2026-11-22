@@ -2,6 +2,7 @@ export type RawListField = string | string[] | null;
 export type RawTextField = string | string[] | null;
 
 export interface RawMember {
+  Cadastro?: string | null;
   notionId?: string;
   notionUrl?: string;
   "Nome Completo": string | null;
@@ -128,6 +129,8 @@ export interface DashboardAnalyses {
 }
 
 export interface Member {
+  notionId?: string;
+  cadastro?: string | null;
   slug: string;
   nome: string;
   nomeOriginal: string;
@@ -182,6 +185,7 @@ export interface Project {
 export interface DashboardData {
   source?: {
     mode: "live" | "snapshot";
+    formsStatus?: "connected" | "unavailable" | "unconfigured";
     syncedAt: string;
     revision?: string;
   };

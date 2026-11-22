@@ -12,10 +12,9 @@ Use Node.js 22, instale as dependências com `npm ci`, copie `.env.example` para
 - Projeto Vercel: [LaIA / dashboard-laia](https://vercel.com/la-ia/dashboard-laia).
 - Endereço de produção: [dashboard-laia.vercel.app](https://dashboard-laia.vercel.app).
 
-A publicação inicial utiliza os arquivos enviados ao Vercel. O repositório ainda precisa
-ser conectado em **Settings → Git** para publicar automaticamente a cada alteração.
-Para publicar manualmente, envie os arquivos versionados do projeto à página do projeto
-no Vercel, sem incluir `.env.local`, `node_modules`, cópias de segurança ou credenciais.
+Com o repositório conectado em **Settings → Git**, os commits enviados à branch de produção
+iniciam uma nova publicação. Confira o commit em **Deployments**; alterações locais não
+publicam o site. Nunca envie `.env.local`, `node_modules`, cópias de segurança ou credenciais.
 
 O ambiente **Production** do Vercel contém `ADMIN_PASSWORD_HASH` e `SESSION_SECRET`
 como segredos, além de `APP_URL` com o endereço HTTPS e dos identificadores das bases.
@@ -57,7 +56,7 @@ A versão anterior é preservada em `db/backups/`, pasta ignorada pelo Git.
 `GET /api/notion/status` informa o modo (`live` ou `snapshot`), a data da sincronização
 e as quantidades de membros e projetos, sem expor credenciais ou dados de contato.
 
-Validação: `npm run test:notion`, `npm run test:auth`, `npx tsc --noEmit` e `npm run build`.
+Validação: `npm run test:notion`, `npm run test:auth`, `npm run test:forms`, `npx tsc --noEmit` e `npm run build`.
 
 ## Acesso administrativo
 
@@ -90,3 +89,44 @@ os perfis. `lib/member-media.ts` associa os nomes e suas variantes aos arquivos,
 confundir pessoas com nomes parecidos. Cadastros sem foto exibem as iniciais.
 
 Os gráficos usam um único contêiner responsivo e não repetem animações a cada atualização.
+
+## Formulário individual de membros
+
+Abra **Formulários** no menu administrativo, procure o membro e gere seu link.
+O membro abre o link sem login administrativo, confere o cadastro e envia as respostas.
+Os links são criptografados, específicos de um cadastro, duram 7 dias e não são enviados
+automaticamente. Gerar outro link não revoga o anterior; trocar `MEMBER_FORM_SECRET`
+(ou `SESSION_SECRET` quando não há chave separada) revoga todos os links anteriores.
+
+Nome, e-mail, telefone, tecnologias e áreas de interesse atualizam apenas as propriedades
+existentes no Notion. Curso, disponibilidade e data da resposta ficam exclusivamente no
+armazenamento privado do dashboard, associados ao ID estável do membro. Alimentam os perfis,
+filtros e gráficos sem criar campos ou escrever esses dados no conteúdo das páginas do Notion.
+Cargos, núcleos e projetos continuam sendo definidos pela diretoria no Notion.
+
+Para ativar o recebimento:
+
+1. Crie uma integração interna separada no workspace da LaIA com **leitura e atualização de
+   conteúdo**. Conecte-a somente à base **Membros**; não habilite inserção nem alteração de esquema.
+   Cadastre o token como segredo `NOTION_FORM_TOKEN`, mantendo `NOTION_TOKEN` somente para leitura.
+2. No projeto correto do Vercel, conecte **Upstash Redis** em **Storage / Marketplace**.
+   As variáveis privadas são `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN`.
+   Configure a persistência sem despejo automático de chaves; não use um banco de cache descartável.
+   Separe o banco de Preview do banco de Production para testes não alterarem respostas reais.
+3. Confira `APP_URL=https://dashboard-laia.vercel.app` em Production e faça um novo deploy.
+   Para desenvolver, use as mesmas variáveis no `.env.local`, com o endereço local correto.
+   Nenhuma dessas credenciais deve ser publicada ou enviada pelo chat.
+
+Sem essas conexões, a prévia funciona e o envio fica desabilitado. O dashboard atual continua
+funcionando. Se o armazenamento ficar indisponível, o painel mostra um aviso e preserva a consulta
+ao Notion. Após um envio completo, os gráficos e perfis recebem os dados na atualização automática
+da página (30 segundos) ou pelo botão Atualizar, sem redeploy.
+
+O sistema só confirma sucesso depois dos dois salvamentos. Um rascunho privado de curso e
+disponibilidade dura 24 horas para recuperar um envio interrompido; o dashboard usa somente
+respostas confirmadas. Falhas após a atualização do Notion exibem uma mensagem específica e
+permitem reabrir o formulário para recuperar as respostas. Não existe transação única entre
+os dois serviços. Os limites por processo são uma proteção básica; o bloqueio por membro é
+compartilhado no Redis para evitar envios simultâneos.
+
+Detalhes do fluxo e dos campos: [formulario-membros.md](docs/formulario-membros.md).

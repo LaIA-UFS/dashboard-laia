@@ -128,6 +128,7 @@ export function buildNotionDatabase(
       "Aniversário": date(row["date:Aniversário:start"]),
       Status: text(row.Status),
       notionId: id,
+      Cadastro: text(row.Cadastro),
       notionUrl: row.url,
     };
   });

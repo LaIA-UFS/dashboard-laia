@@ -47,6 +47,7 @@ export function DataFreshness({ source }: { source: DashboardData["source"] }) {
       <span className="inline-flex flex-wrap items-center gap-2">
         <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
         {source.mode === "live" ? "Notion conectado" : "Última sincronização do Notion"} · {updated}
+        {source.formsStatus === "unavailable" ? <span role="status" className="text-amber-200">Curso e disponibilidade do formulário estão temporariamente indisponíveis.</span> : null}
         <button type="button" disabled={isPending} onClick={() => startTransition(async () => { await refreshNotionData(); router.refresh(); })} className="rounded px-2 py-1 text-violet-300 hover:bg-secondary disabled:opacity-50">{isPending ? "Atualizando…" : "Atualizar"}</button>
       </span>
       <a href="https://www.notion.so/96d7067de5d182a99afc013e2446eda8" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">

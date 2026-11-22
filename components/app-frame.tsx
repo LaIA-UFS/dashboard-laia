@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import { LayoutDashboard, Users, FolderOpen, Network, PanelLeftClose, PanelLeftOpen, Menu, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, FolderOpen, Network, ClipboardList, PanelLeftClose, PanelLeftOpen, Menu, LogOut } from "lucide-react";
 import { logout } from "@/app/login/actions";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 
@@ -13,6 +13,7 @@ const navigation = [
   { href: "/membros", label: "Membros", icon: Users },
   { href: "/projetos", label: "Projetos", icon: FolderOpen },
   { href: "/organograma", label: "Organograma", icon: Network },
+  { href: "/formularios", label: "Formulários", icon: ClipboardList },
 ];
 
 function Navigation({ compact = false, onNavigate }: { compact?: boolean; onNavigate?: () => void }) {

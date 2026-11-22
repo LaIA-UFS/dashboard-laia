@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { MuseoModerno } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+import { AppAnalytics } from '@/components/app-analytics'
 import './globals.css'
 
 
@@ -26,7 +26,7 @@ export default function RootLayout({
       </head>
       <body className={`${museo.className} antialiased`}>
         {children}
-        <Analytics />
+        <AppAnalytics />
       </body>
     </html>
   )

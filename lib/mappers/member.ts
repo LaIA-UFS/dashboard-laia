@@ -184,6 +184,8 @@ export function rawMemberToMember(rawMember: RawMember): Member {
 
   return {
     slug: slugify(nomeOriginal),
+    notionId: rawMember.notionId,
+    cadastro: trimValue(rawMember.Cadastro),
     nome,
     nomeOriginal,
     areasAtuacao: normalizeListField(rawMember["Áreas de atuação"]),
