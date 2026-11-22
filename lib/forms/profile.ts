@@ -8,11 +8,23 @@ export const profileAnswerSchema = z.object({
   phone: z.string().trim().max(30).regex(/^[+\d\s()-]+$/, "Informe um telefone válido.").transform(value => value.replace(/\D/g, "")).refine(value => value.length >= 10 && value.length <= 13, "Informe o telefone com DDD."),
   techs: selections,
   interests: selections,
+  additionalTechs: selections.optional(),
+  communication: selections.optional(),
   course: z.string().trim().min(2, "Informe seu curso.").max(120, "Use até 120 caracteres."),
   availability: z.enum(AVAILABILITY_OPTIONS, { errorMap: () => ({ message: "Escolha sua disponibilidade semanal." }) }),
   revision: z.string().regex(/^[a-f\d]{64}$/, "Recarregue o formulário antes de enviar."),
   confirmed: z.literal(true, { errorMap: () => ({ message: "Confira e confirme as informações antes de enviar." }) }),
 }).strict();
+
+export const progressSchema = z.object({
+  course: z.string().trim().max(120),
+  availability: z.union([z.literal(""), z.enum(AVAILABILITY_OPTIONS)]),
+  techs: selections,
+  interests: selections,
+  additionalTechs: selections,
+  communication: selections,
+}).strict();
+export type FormProgress = z.infer<typeof progressSchema>;
 
 export type ProfileAnswer = z.infer<typeof profileAnswerSchema>;
 export interface PublicMemberProfile {
@@ -26,6 +38,9 @@ export interface PublicMemberProfile {
   revision: string;
   course?: string;
   availability?: string;
+  additionalTechs?: string[];
+  communication?: string[];
+  progress?: FormProgress;
 }
 export interface ProfileFormState {
   success: boolean;

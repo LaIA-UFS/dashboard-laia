@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
+import type { FormProgress } from "./profile";
 
-export interface DashboardResponse { course: string; availability: string; submittedAt: string }
+export interface DashboardResponse { course: string; availability: string; submittedAt: string; additionalTechs?: string[]; communication?: string[] }
+export type FormStatus = "pending" | "inProgress" | "completed";
 interface StoreConfig { url: string; token: string; prefix: string }
 export class ResponseStoreError extends Error {
   status: number;
@@ -32,7 +34,10 @@ function response(value: unknown): DashboardResponse | null {
   try {
     const row = JSON.parse(String(value)) as Partial<DashboardResponse>;
     if (typeof row.course !== "string" || !row.course.trim() || row.course.length > 120 || typeof row.availability !== "string" || row.availability.length > 100 || typeof row.submittedAt !== "string" || !Number.isFinite(Date.parse(row.submittedAt))) throw new Error();
-    return { course: row.course, availability: row.availability, submittedAt: row.submittedAt };
+    const strings = (items: unknown) => Array.isArray(items) ? items.filter((item): item is string => typeof item === "string").slice(0, 30) : [];
+    return { course: row.course, availability: row.availability, submittedAt: row.submittedAt,
+      ...(row.additionalTechs ? { additionalTechs: strings(row.additionalTechs) } : {}),
+      ...(row.communication ? { communication: strings(row.communication) } : {}) };
   } catch { throw new ResponseStoreError("Uma resposta do dashboard precisa ser conferida pela diretoria."); }
 }
 
@@ -65,6 +70,39 @@ export function createResponseStore(config: StoreConfig, sourceId: string, fetch
       const values = await command<Array<string | null>>(["MGET", key(memberId), `${key(memberId)}:draft`]);
       return response(values[1] ?? values[0]);
     },
+    async readFormState(memberId: string) {
+      const base = key(memberId);
+      const values = await command<Array<string | null>>(["MGET", base, `${base}:draft`, `${base}:progress`]);
+      if (!Array.isArray(values) || values.length !== 3) throw new ResponseStoreError();
+      const [confirmed, recovery, progress] = values;
+      return {
+        extra: response(recovery ?? confirmed),
+        progress: !recovery && progress ? JSON.parse(progress) as FormProgress : undefined,
+      };
+    },
+    async saveProgress(memberId: string, progress: FormProgress) {
+      const base = key(memberId);
+      const result = await command<number>(["EVAL",
+        "if redis.call('EXISTS',KEYS[1]) == 1 then return 0 end; redis.call('SET',KEYS[2],ARGV[1]); return 1",
+        2, `${base}:lock`, `${base}:progress`, JSON.stringify(progress)]);
+      if (result !== 1) throw new ResponseStoreError("Há um envio em andamento. Aguarde e tente de novo.", 409);
+    },
+    async readStatuses(memberIds: string[]) {
+      const statuses = new Map<string, FormStatus>();
+      for (let start = 0; start < memberIds.length; start += 50) {
+        const batch = memberIds.slice(start, start + 50);
+        const values = await command<Array<string | null>>(["MGET", ...batch.flatMap(memberId => {
+          const base = key(memberId);
+          return [base, `${base}:draft`, `${base}:progress`];
+        })]);
+        if (!Array.isArray(values) || values.length !== batch.length * 3) throw new ResponseStoreError();
+        batch.forEach((memberId, i) => {
+          const [confirmed, recovery, progress] = values.slice(i * 3, i * 3 + 3);
+          statuses.set(memberId, recovery || progress ? "inProgress" : confirmed ? "completed" : "pending");
+        });
+      }
+      return statuses;
+    },
     async begin(memberId: string, answer: DashboardResponse) {
       const base = key(memberId);
       const owner = randomUUID();
@@ -83,7 +121,7 @@ export function createResponseStore(config: StoreConfig, sourceId: string, fetch
       return {
         release,
         async commit() {
-          const result = await command<number>(["EVAL", "if redis.call('GET',KEYS[1]) ~= ARGV[1] then return 0 end; redis.call('SET',KEYS[2],ARGV[2]); redis.call('DEL',KEYS[3]); redis.call('DEL',KEYS[1]); return 1", 3, `${base}:lock`, base, `${base}:draft`, owner, JSON.stringify(answer)]);
+          const result = await command<number>(["EVAL", "if redis.call('GET',KEYS[1]) ~= ARGV[1] then return 0 end; redis.call('SET',KEYS[2],ARGV[2]); redis.call('DEL',KEYS[3],KEYS[4],KEYS[1]); return 1", 4, `${base}:lock`, base, `${base}:draft`, `${base}:progress`, owner, JSON.stringify(answer)]);
           if (result !== 1) throw new ResponseStoreError();
           released = true;
         },

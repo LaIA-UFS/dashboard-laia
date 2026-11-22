@@ -143,10 +143,13 @@ function redisMock() {
       else { values.set(args[1], args[2]); result = "OK"; }
     } else if (args[0] === "EVAL" && args[2] === 1) {
       result = values.get(args[3]) === args[4] ? Number(values.delete(args[3])) : 0;
-    } else if (args[0] === "EVAL" && args[2] === 3) {
+    } else if (args[0] === "EVAL" && args[2] === 2) {
+      if (values.has(args[3])) result = 0;
+      else { values.set(args[4], args[5]); result = 1; }
+    } else if (args[0] === "EVAL" && args[2] === 4) {
       if (failCommit) return Response.json({ error: "unavailable" }, { status: 503 });
-      if (values.get(args[3]) !== args[6]) result = 0;
-      else { values.set(args[4], args[7]); values.delete(args[5]); values.delete(args[3]); result = 1; }
+      if (values.get(args[3]) !== args[7]) result = 0;
+      else { values.set(args[4], args[8]); values.delete(args[5]); values.delete(args[6]); values.delete(args[3]); result = 1; }
     } else throw new Error(`Unexpected command ${args[0]}`);
     return Response.json({ result });
   };
@@ -154,6 +157,23 @@ function redisMock() {
   return { store, values, calls, failNextCommit: () => { failCommit = true; } };
 }
 const extra = { course: "Estatística", availability: AVAILABILITY_OPTIONS[0], submittedAt: "2026-11-22T12:00:00Z" };
+
+test("status acompanha rascunho, recuperação e envio confirmado de forma consistente", async () => {
+  const { store } = redisMock();
+  assert.equal((await store.readStatuses([memberId])).get(memberId), "pending");
+  const progress = { course: "", availability: "", additionalTechs: ["PyTorch"], communication: ["Jornalismo"], techs: [], interests: [] };
+  await store.saveProgress(memberId, progress);
+  assert.equal((await store.readStatuses([memberId])).get(memberId), "inProgress");
+  assert.deepEqual((await store.readFormState(memberId)).progress, progress);
+  const submitted = { ...extra, additionalTechs: progress.additionalTechs, communication: progress.communication };
+  const tx = await store.begin(memberId, submitted);
+  assert.equal((await store.readFormState(memberId)).progress, undefined);
+  await assert.rejects(store.saveProgress(memberId, progress), { status: 409 });
+  await tx.commit();
+  assert.equal((await store.readStatuses([memberId, otherId])).get(memberId), "completed");
+  assert.equal((await store.readStatuses([memberId, otherId])).get(otherId), "pending");
+  assert.deepEqual(await store.readFormState(memberId), { extra: submitted, progress: undefined });
+});
 
 test("configuração exige persistência externa HTTPS, sem fallback temporário", () => {
   assert.equal(getResponseStoreConfig({}), null);
@@ -168,7 +188,7 @@ test("rascunho recuperável não alimenta os gráficos antes da confirmação", 
   assert.equal((await mock.store.readMany([memberId])).size, 0);
   await transaction.commit();
   assert.deepEqual((await mock.store.readMany([memberId])).get(memberId.replaceAll("-", "")), extra);
-  const saved = mock.calls.find(call => call[0] === "EVAL" && call[2] === 3);
+  const saved = mock.calls.find(call => call[0] === "EVAL" && call[2] === 4);
   assert.ok(saved[1].includes("redis.call('SET',KEYS[2],ARGV[2])"));
   assert.ok(!saved[1].includes("EXPIRE"));
   assert.ok(mock.calls.every(call => !JSON.stringify(call).includes("ana@example.com")));

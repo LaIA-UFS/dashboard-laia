@@ -1,14 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ClipboardList, Copy, ExternalLink, Link2, LoaderCircle, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import type { FormStatus } from "@/lib/forms/response-store";
 import { generateMemberFormLink } from "@/app/(dashboard)/formularios/actions";
 
-interface MemberRow { id: string; name: string; answeredAt: string | null }
+interface MemberRow { id: string; name: string; answeredAt: string | null; status?: FormStatus }
+const statusStyles = {
+  pending: { label: "Pendente", className: "bg-white/10 text-muted-foreground" },
+  inProgress: { label: "Em andamento", className: "bg-amber-400/15 text-amber-200" },
+  completed: { label: "Concluído", className: "bg-emerald-400/15 text-emerald-200" },
+};
 interface Invite { url: string; expiresAt: number }
 const normalized = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
 export function MemberFormInvites({ members, ready }: { members: MemberRow[]; ready: boolean }) {
+  const router = useRouter();
+  useEffect(() => {
+    if (!ready) return;
+    const refresh = () => { if (document.visibilityState === "visible") router.refresh(); };
+    const timer = window.setInterval(refresh, 30000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [ready, router]);
   const [search, setSearch] = useState("");
   const [invites, setInvites] = useState<Record<string, Invite>>({});
   const [pending, setPending] = useState<string | null>(null);
@@ -27,7 +45,7 @@ export function MemberFormInvites({ members, ready }: { members: MemberRow[]; re
     catch { setMessage("Não foi possível copiar automaticamente. Selecione o endereço exibido e copie-o."); }
   }
   const visible = members.filter(member => normalized(member.name).includes(normalized(search)));
-  const answered = members.filter(member => member.answeredAt).length;
+  const answered = members.filter(member => member.status === "completed").length;
   return <section className="space-y-5 py-4">
     <header className="space-y-2"><div className="flex items-center gap-2"><ClipboardList className="size-5 text-violet-300" /><h1 className="text-xl font-semibold">Formulários de membros</h1></div><p className="max-w-3xl text-sm leading-6 text-muted-foreground">Gere um link individual para cada membro atualizar seu cadastro. Os links valem por 7 dias. Curso e disponibilidade alimentam o dashboard; nome, contatos, tecnologias e interesses atualizam os campos existentes no Notion.</p><p className="text-xs text-muted-foreground">{answered} de {members.length} membros responderam. Nenhum convite é enviado automaticamente.</p></header>
     {!ready ? <div role="status" className="rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm leading-6 text-amber-100">Você já pode pré-visualizar os formulários. Para receber respostas, falta configurar a conexão de atualização do Notion e o armazenamento das respostas do dashboard. A cópia dos convites será liberada quando essas conexões forem configuradas.</div> : null}
@@ -35,7 +53,8 @@ export function MemberFormInvites({ members, ready }: { members: MemberRow[]; re
     <p role="status" aria-live="polite" className="text-sm text-violet-200">{message}</p>
     <div className="divide-y divide-border/50 overflow-hidden rounded-xl border border-border/60 bg-card">{visible.map(member => {
       const invite = invites[member.id];
-      return <article key={member.id} className="space-y-3 p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-sm font-semibold">{member.name}</h2><p className="mt-1 text-xs text-muted-foreground">{member.answeredAt ? `Última resposta: ${new Date(member.answeredAt).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}` : "Aguardando resposta"}</p></div><button type="button" disabled={!member.id || pending !== null} onClick={() => generate(member)} className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-violet-400/30 bg-violet-400/10 px-3 text-xs font-medium text-violet-200 hover:bg-violet-400/20 disabled:opacity-50">{pending === member.id ? <LoaderCircle className="size-3.5 animate-spin" /> : <Link2 className="size-3.5" />}{invite ? "Gerar novo link" : ready ? "Gerar link" : "Gerar prévia"}</button></div>
+      const badge = member.status ? statusStyles[member.status] : null;
+      return <article key={member.id} className="space-y-3 p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><div className="flex flex-wrap items-center gap-2"><h2 className="text-sm font-semibold">{member.name}</h2>{badge ? <span className={`rounded-full px-2 py-0.5 text-xs ${badge.className}`}>{badge.label}</span> : <span className="text-xs text-muted-foreground">Status indisponível</span>}</div><p className="mt-1 text-xs text-muted-foreground">{member.answeredAt ? `Última resposta: ${new Date(member.answeredAt).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}` : null}</p></div><button type="button" disabled={!member.id || pending !== null} onClick={() => generate(member)} className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-violet-400/30 bg-violet-400/10 px-3 text-xs font-medium text-violet-200 hover:bg-violet-400/20 disabled:opacity-50">{pending === member.id ? <LoaderCircle className="size-3.5 animate-spin" /> : <Link2 className="size-3.5" />}{invite ? "Gerar novo link" : ready ? "Gerar link" : "Gerar prévia"}</button></div>
         {invite ? <div className="space-y-2"><label className="block text-xs text-muted-foreground">Link individual<input aria-label={`Link de ${member.name}`} readOnly value={invite.url} onFocus={event => event.target.select()} className="mt-1 h-9 w-full rounded-md border border-border bg-background px-2 text-xs" /></label><div className="flex flex-wrap items-center gap-3 text-xs"><button type="button" disabled={!ready} onClick={() => copy(invite.url)} className="inline-flex min-h-9 items-center gap-1.5 rounded-md bg-violet-600 px-3 text-white disabled:opacity-40"><Copy className="size-3" />Copiar convite</button><a href={invite.url} target="_blank" rel="noreferrer" className="inline-flex min-h-9 items-center gap-1.5 text-violet-200"><ExternalLink className="size-3" />Pré-visualizar</a><span className="text-muted-foreground">Válido até {new Date(invite.expiresAt).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}</span></div></div> : null}
       </article>;
     })}{!visible.length ? <p className="p-5 text-sm text-muted-foreground">Nenhum membro encontrado.</p> : null}</div>
